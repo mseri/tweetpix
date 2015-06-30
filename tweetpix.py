@@ -50,8 +50,7 @@ def get_random_parameters():
 
 
 def prepare_image(image):
-    uniform_size = scaled_size(1600 / max(image.size), image.size)
-    pixellated = pixellize(image.resize(uniform_size)).convert("RGB")
+    pixellated = pixellize(image).convert("RGB")
 
     return pixellated
 
@@ -65,4 +64,6 @@ if __name__=="__main__":
     image = get_random_image_from(photo_url)
     pixellatedimage = prepare_image(image)
 
-    pixellatedimage.save(photo_url.replace("/", "."))
+    uniform_size = scaled_size(1200 / max(image.size), image.size)
+    print(uniform_size)
+    pixellatedimage.resize(uniform_size).save(photo_url.replace("/", ".").replace(".jpg", ".png"))
