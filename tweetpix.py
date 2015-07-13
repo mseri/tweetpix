@@ -56,7 +56,7 @@ def publish_image(image_file, status_message):
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
     api = tweepy.API(auth)
-    api.update_with_media(file=image_file, status=status_message)
+    api.update_with_media(image_file, status=status_message)
 
 
 def tweetpix(search_string="panorama"):
