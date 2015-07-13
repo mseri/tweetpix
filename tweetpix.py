@@ -71,7 +71,7 @@ def tweetpix(search_string="panorama"):
     photo_file = photo_url.replace("/", ".").replace(".jpg", ".png")
     pixellatedimage.resize(uniform_size).save(photo_file)
 
-    message = "#pixellized version of {}. Search {}, baseline 72 px, long side 1200 px".format(
+    message = "#pixellized version of {}. Search '{}', baseline 72px, long side 1200px".format(
         page_url, search_string)
     publish_image(photo_file, message)
 
