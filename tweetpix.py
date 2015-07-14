@@ -62,7 +62,6 @@ def publish_image(image_file, status_message):
 def tweetpix(search_string="panorama"):
     photo_url, page_url = generate_urls_for(search_string)
     flickr_image = get_random_image_from(photo_url)
-    print(page_url)
     pixellatedimage = prepare_image(flickr_image)
 
     uniform_size = scaled_size(1200 / max(flickr_image.size),
@@ -73,6 +72,8 @@ def tweetpix(search_string="panorama"):
 
     message = "#pixellized version of {}. Search '{}', baseline 72px, long side 1200px".format(
         page_url, search_string)
+
+    print(message)
     publish_image(photo_file, message)
 
 
