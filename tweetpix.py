@@ -60,7 +60,7 @@ def publish_image(image_file, status_message):
 
 
 def tweetpix(search_string="panorama"):
-    photo_url, page_url = generate_urls_for("panorama")
+    photo_url, page_url = generate_urls_for(search_string)
     flickr_image = get_random_image_from(photo_url)
     print(page_url)
     pixellatedimage = prepare_image(flickr_image)
