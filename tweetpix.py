@@ -1,7 +1,11 @@
+#!/usr/bin/env python3
+"""Tweetpix, one day it will be a tweetbot for pixellize :)
+"""
 import json
 import tweepy
 
 from io import BytesIO
+import click
 from keys import keys
 from PIL import Image
 from pixellize import pixellize, scaled_size
@@ -22,6 +26,11 @@ FLICKR_PHOTOPAGE_URL = "www.flickr.com/photos/{owner}/{id}"
 
 
 def generate_urls_for(topic):
+    """Takes a "topic" string and returns a tuple containing two urls.
+    They are respectively the photo url and photo page url of a random picture. 
+    The picture is chosen among the result of searching "topic" in flickr with
+    a suitable constraint on the licenses.
+    """
     search_url = FLICKR_SEARCH_URL.format(FLICKR_API_KEY, topic)
     raw_data = get(search_url)
     decoded_data = str(raw_data.content, encoding="utf-8", errors="ignore")
@@ -31,21 +40,26 @@ def generate_urls_for(topic):
     return FLICKR_PHOTO_URL.format(**rpic), FLICKR_PHOTOPAGE_URL.format(**rpic)
 
 
-def get_random_image_from(photo_url):
-
+def get_image_from(photo_url):
+    """Thakes a photo url and returns it as a PIL.Image
+    """
     image_data = get("https://" + photo_url).content
     stream = BytesIO(image_data)
     image = Image.open(stream).convert("RGB")
 
     return image
 
-
+#TODO
 def get_random_parameters():
-    randint(1, 2)
+    """
+    Generate random parameters for the pixellize function.
+    """
     pass
 
 
 def prepare_image(image):
+    """Pixellise and suitably convert a PIL.Image, then returns it.
+    """
     # pixellize(image, max_pixels=72, rescale=4.0, ncols=20, minv=14, maxv=181, gamma=1.51)
     pixellated = pixellize(image).convert("RGB")
 
@@ -53,15 +67,25 @@ def prepare_image(image):
 
 
 def publish_image(image_file, status_message):
+    """Takes a PIL.Image and a status_message and publishes it on your
+    twitter account. The parameters are stateful and taken from the keys.py file
+    """
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
     api = tweepy.API(auth)
     api.update_with_media(image_file, status=status_message)
 
-
+# TODO: decide if add an optional message
+@click.command()
+@click.argument("search_string", nargs=1)
 def tweetpix(search_string="panorama"):
+    """Takes a search string to use on flickr, 
+    grabs a random picture from the search results, 
+    pixellizes the picture,
+    finally publishes it on twitter.
+    """
     photo_url, page_url = generate_urls_for(search_string)
-    flickr_image = get_random_image_from(photo_url)
+    flickr_image = get_image_from(photo_url)
     pixellatedimage = prepare_image(flickr_image)
 
     uniform_size = scaled_size(1200 / max(flickr_image.size),
